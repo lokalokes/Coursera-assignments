@@ -1,0 +1,774 @@
+---
+title: "biostatistics_coursera"
+output: html_document
+date: "`r Sys.Date()`"
+---
+
+
+
+Week 2
+
+
+```{r setup, eval=TRUE}
+knitr::opts_chunk$set(cache=TRUE)
+```
+
+
+# Question 1: What percentage of variation is explained by the 1st principal component in the data set if you:
+  1. Do no transformations?
+  2. log2(data + 1) transform?
+  3. log2(data + 1) transform and subtract row means?
+
+Load the Montgomery and Pickrell eSet:
+
+```{r }
+
+con =url("http://bowtie-bio.sourceforge.net/recount/ExpressionSets/montpick_eset.RData")
+load(file=con)
+close(con)
+mp = montpick.eset
+pdata=pData(mp)
+edata=as.data.frame(exprs(mp))
+fdata = fData(mp)
+
+
+
+```
+
+
+Answer: a. 0.89 b. 0.97 c. 0.35
+
+
+
+# Question 2: Perform the log2(data + 1) transform and subtract row means from the samples. Set the seed to 333 and use k-means to cluster the samples into two clusters. Use svd to calculate the singular vectors. What is the correlation between the first singular vector and the sample clustering indicator?
+
+Load the Montgomery and Pickrell eSet:
+
+
+```{r }
+
+fdata = fData(mp)
+
+
+```
+
+Answer: 0.87
+
+
+# Question 3: Fit a linear model relating the first gene’s counts to the number of technical replicates, treating the number of replicates as a factor. Plot the data for this gene versus the covariate. Can you think of why this model might not fit well?
+
+Load the Bodymap data with the following command:
+
+
+```{r }
+
+con =url("http://bowtie-bio.sourceforge.net/recount/ExpressionSets/bodymap_eset.RData")
+load(file=con)
+close(con)
+bm = bodymap.eset
+edata = exprs(bm)
+pdata_bm=pData(bm)
+
+
+```
+
+Answer: one of those: There may be different numbers of counts for different numbers of technical replicates. The difference between 2 and 5 technical replicates is not the same as the difference between 5 and 6 technical replicates. There is only one data point with a value of 6 so it is likely that the estimated value for that number of technical replicates is highly variable.
+
+
+# Question 4: Fit a linear model relating he first gene’s counts to the age of the person and the sex of the samples. What is the value and interpretation of the coefficient for age?
+
+Load the Bodymap data with the following command:
+
+```{r }
+
+con =url("http://bowtie-bio.sourceforge.net/recount/ExpressionSets/bodymap_eset.RData")
+load(file=con)
+close(con)
+bm = bodymap.eset
+edata = exprs(bm)
+pdata_bm=pData(bm)
+
+
+```
+
+Answer: -23.91. This coefficient means that for each additional year of age, the count goes down by an average of 23.91 for a fixed sex.
+
+
+
+
+# Question 5: Perform the log2(data + 1) transform. Then fit a regression model to each sample using population as the outcome. Do this using the \verb|lm.fit|lm.fit function (hint: don't forget the intercept). What is the dimension of the residual matrix, the effects matrix and the coefficients matrix?
+
+Load the Montgomery and Pickrell eSet:
+
+```{r }
+
+con =url("http://bowtie-bio.sourceforge.net/recount/ExpressionSets/montpick_eset.RData")
+load(file=con)
+close(con)
+mp = montpick.eset
+pdata=pData(mp)
+edata=as.data.frame(exprs(mp))
+fdata = fData(mp)
+
+
+
+```
+
+Answer: one of those 
+
+Residual matrix: 52580 x 129   
+
+Effects matrix: 52580 x129  
+
+Coefficients matrix: 2 x 52580 
+
+
+Residual matrix: 52580 x 129   
+
+Effects matrix: 52580 x129  
+
+Coefficients matrix: 52580 x 2   
+
+
+Residual matrix:  129 x 52580 
+
+Effects matrix: 129 x 52580
+
+Coefficients matrix: 2 x 52580 
+
+
+
+
+
+
+# Question 6: Perform the log2(data + 1) transform. Then fit a regression model to each sample using population as the outcome. Do this using the \verb|lm.fit|lm.fit function (hint: don't forget the intercept). What is the effects matrix?
+
+Load the Montgomery and Pickrell eSet:
+
+```{r }
+
+con =url("http://bowtie-bio.sourceforge.net/recount/ExpressionSets/montpick_eset.RData")
+load(file=con)
+close(con)
+mp = montpick.eset
+pdata=pData(mp)
+edata=as.data.frame(exprs(mp))
+fdata = fData(mp)
+
+
+
+```
+
+Answer: one of those
+
+
+The shrunken estimated fitted values for all samples for each gene, with the values for each gene stored in the columns of the matrix. 
+
+
+The estimated fitted values for all samples for each gene, with the values for each gene stored in the columns of the matrix. 
+
+
+The model coefficients for all samples for each gene, with the values for each gene stored in the columns of the matrix. 
+
+
+
+
+
+# Question 7: Fit many regression models to the expression data where \verb|age|age is the outcome variable using the \verb|lmFit|lmFit function from the \verb|limma|limma package (hint: you may have to subset the expression data to the samples without missing values of age to get the model to fit). What is the coefficient for age for the 1,000th gene? Make a plot of the data and fitted values for this gene. Does the model fit well?
+
+Load the Bodymap data with the following command:
+
+```{r }
+
+con =url("http://bowtie-bio.sourceforge.net/recount/ExpressionSets/bodymap_eset.RData")
+load(file=con)
+close(con)
+bm = bodymap.eset
+edata = exprs(bm)
+pdata_bm=pData(bm)
+
+
+
+```
+
+Answer: -27.61. The model doesn't fit well since there are two large outlying values and the rest of the values are near zero.
+
+
+
+
+# Question 8: Fit many regression models to the expression data where \verb|age|age is the outcome variable and \verb|tissue.type|tissue.type is an adjustment variable using the \verb|lmFit|lmFit function from the \verb|limma|limma package (hint: you may have to subset the expression data to the samples without missing values of age to get the model to fit). What is wrong with this model?
+
+Load the Bodymap data with the following command:
+
+```{r }
+
+con =url("http://bowtie-bio.sourceforge.net/recount/ExpressionSets/bodymap_eset.RData")
+load(file=con)
+close(con)
+bm = bodymap.eset
+edata = exprs(bm)
+pdata_bm=pData(bm)
+
+
+
+```
+
+Answer:  Since \verb|tissue.type|tissue.type is a factor variable with many levels, this model has more coefficients to estimate per gene (18) than data points per gene (16).
+
+
+# Question 9: Why is it difficult to distinguish the study effect from the population effect in the Montgomery Pickrell dataset from ReCount? 
+
+Answer: The effects are difficult to distinguish because each study only measured one population. 
+
+
+
+# Question 10: Set the seed using the command \verb|set.seed(33353)|set.seed(33353) then estimate a single surrogate variable using the \verb|sva|sva function after log2(data + 1) transforming the expression data, removing rows with rowMeans less than 1, and treating age as the outcome (hint: you may have to subset the expression data to the samples without missing values of age to get the model to fit). What is the correlation between the estimated surrogate for batch and age? Is the surrogate more highly correlated with \verb|race|race or \verb|gender|gender?
+
+Load the Bodymap data with the following command:
+
+```{r }
+
+con =url("http://bowtie-bio.sourceforge.net/recount/ExpressionSets/bodymap_eset.RData")
+load(file=con)
+close(con)
+bm = bodymap.eset
+edata = exprs(bm)
+pdata_bm=pData(bm)
+
+
+
+```
+
+Answer:  Correlation with age: 0.20. More highly correlated with gender. 
+
+
+
+
+### Week 3 
+
+
+# Question 1: Fit a linear model and a logistic regression model to the data for the 3rd SNP. What are the coefficients for the SNP variable? How are they interpreted? (Hint: Don't forget to recode the 0 values to NA for the SNP data)
+
+
+Load the example SNP data with the following code:
+
+```{r }
+
+library(snpStats)
+library(broom)
+data(for.exercise)
+use <- seq(1, ncol(snps.10), 10)
+sub.10 <- snps.10[,use]
+snpdata = sub.10@.Data
+status = subject.support$cc
+
+
+
+
+```
+
+Answer: Linear Model = -0.04 Logistic Model = -0.16 Both models are fit on the additive scale. So in the linear model case, the coefficient is the decrease in probability associated with each additional copy of the minor allele. In the logistic regression case, it is the decrease in the log odds ratio associated with each additional copy of the minor allele. 
+
+
+# Question 2: In the previous question why might the choice of logistic regression be better than the choice of linear regression?
+
+Answer: If you included more variables it would be possible to get negative estimates for the probability of being a case from the linear model, but this would be prevented with the logistic regression model. 
+
+
+
+# Question 3: Fit a logistic regression model on a recessive (need 2 copies of minor allele to confer risk) and additive scale for the 10th SNP. Make a table of the fitted values versus the case/control status. Does one model fit better than the other?
+
+
+Load the example SNP data with the following code:
+
+```{r }
+
+library(snpStats)
+library(broom)
+data(for.exercise)
+use <- seq(1, ncol(snps.10), 10)
+sub.10 <- snps.10[,use]
+snpdata = sub.10@.Data
+status = subject.support$cc
+
+
+
+
+```
+
+Answer: No, in all cases, the fitted values are near 0.5 and there are about an equal number of cases and controls in each group. This is true regardless of whether you fit a recessive or additive model. 
+
+
+# Question 4: Fit an additive logistic regression model to each SNP. What is the average effect size? What is the max? What is the minimum?
+
+
+Load the example SNP data with the following code:
+
+```{r }
+
+library(snpStats)
+library(broom)
+data(for.exercise)
+use <- seq(1, ncol(snps.10), 10)
+sub.10 <- snps.10[,use]
+snpdata = sub.10@.Data
+status = subject.support$cc
+
+
+
+
+```
+
+Answer: Average effect size =  0.007, minimum = -4.25, maximum = 3.90
+
+
+
+
+# Question 5: Fit an additive logistic regression model to each SNP and square the coefficients. What is the correlation with the results from using \verb|snp.rhs.tests|snp.rhs.tests and \verb|chi.squared|chi.squared? Why does this make sense?
+
+
+Load the example SNP data with the following code:
+
+```{r }
+
+library(snpStats)
+library(broom)
+data(for.exercise)
+use <- seq(1, ncol(snps.10), 10)
+sub.10 <- snps.10[,use]
+snpdata = sub.10@.Data
+status = subject.support$cc
+
+
+
+
+```
+
+Answer: > 0.99. They are both testing for the same association using the same additive regression model on the logistic scale but using slightly different tests. 
+
+
+
+# Question 6: Do the log2(data + 1) transform and fit calculate F-statistics for the difference between studies/populations using genefilter:rowFtests and using genefilter:rowttests. Do you get the same statistic? Do you get the same p-value?
+
+
+Load the Montgomery and Pickrell eSet:
+
+```{r }
+
+con =url("http://bowtie-bio.sourceforge.net/recount/ExpressionSets/montpick_eset.RData")
+load(file=con)
+close(con)
+mp = montpick.eset
+pdata=pData(mp)
+edata=as.data.frame(exprs(mp))
+fdata = fData(mp)
+
+
+
+```
+
+Answer: You get the same p-value but different statistics. This is because the F-statistic and t-statistic test the same thing when doing a two group test and one is a transform of the other. 
+
+
+
+# Question 7: First test for differences between the studies using the \verb|DESeq2|DESeq2 package using the \verb|DESeq|DESeq function. Then do the log2(data + 1) transform and do the test for differences between studies using the \verb|limma|limma package and the \verb|lmFit|lmFit, \verb|ebayes|ebayes and \verb|topTable|topTable functions. What is the correlation in the statistics between the two analyses? Are there more differences for the large statistics or the small statistics (hint: Make an MA-plot).
+
+
+Load the Montgomery and Pickrell eSet:
+
+```{r }
+
+con =url("http://bowtie-bio.sourceforge.net/recount/ExpressionSets/montpick_eset.RData")
+load(file=con)
+close(con)
+mp = montpick.eset
+pdata=pData(mp)
+edata=as.data.frame(exprs(mp))
+fdata = fData(mp)
+
+
+
+```
+
+Answer: 0.93. There are more differences for the small statistics
+
+
+
+
+# Question 8: Apply the Benjamni-Hochberg correction to the P-values from the two previous analyses. How many results are statistically significant at an FDR of 0.05 in each analysis? 
+
+
+```{r }
+
+
+
+```
+
+Answer: 
+
+not this one: DESeq = 12 significant; limma = 3significant
+
+not this one: DESeq = 2807 significant;  limma = 1995 significant
+
+not this one: DESeq = 1995 significant; limma = 1995 significant
+
+DESeq = 1995 significant; limma = 2807 significant
+
+
+
+
+# Question 9: Is the number of significant differences surprising for the analysis comparing studies from Question 8? Why or why not? 
+
+
+
+```{r }
+
+
+
+```
+
+Answer: 
+
+not this one: Yes. This is a very large number of genes different between studies and we don't have a good explanation. 
+
+not this one: No. There are very few genes different between studies and that is what we would expect.
+
+not this one: No. We are testing many genes so we expect a huge fraction to be different between studies. 
+
+Yes and no. It is surprising because there is a large fraction of the genes that are significantly different, but it isn't that surprising because we would expect that when comparing measurements from very different batches. 
+
+
+
+# Question 10: Suppose you observed the following P-values from the comparison of differences between studies. Why might you be suspicious of the analysis? 
+
+
+```{r }
+
+
+```
+
+Answer: The p-values should have a spike near zero (the significant results) and be flat to the right hand side (the null results) so the distribution pushed toward one suggests something went wrong.
+
+
+
+
+### Week 4
+
+
+# Question 1: When performing gene set analysis it is critical to use the same annotation as was used in pre-processing steps. Read the paper behind the Bottomly data set on the ReCount database: http://www.ncbi.nlm.nih.gov/pubmed?term=21455293
+
+Using the paper and the function: \verb|supportedGenomes()|supportedGenomes() in the \verb|goseq|goseq package can you figure out which of the Mouse genome builds they aligned the reads to.
+
+
+Answer: UCSC mm9
+
+
+
+# Question 2: Load the Bottomly data with the following code and perform a differential expression analysis using \verb|limma|limma with only the strain variable as an outcome. How many genes are differentially expressed at the 5% FDR level using Benjamini-Hochberg correction? What is the gene identifier of the first gene differentially expressed at this level (just in order, not the smallest FDR) ? (hint: the \verb|featureNames|featureNames function may be useful)
+
+```{r}
+
+library(Biobase)
+library(limma)
+con =url("http://bowtie-bio.sourceforge.net/recount/ExpressionSets/bottomly_eset.RData")
+load(file=con)
+close(con)
+bot = bottomly.eset
+pdata_bot=pData(bot)
+fdata_bot = featureData(bot)
+edata = exprs(bot)
+fdata_bot = fdata_bot[rowMeans(edata) > 5]
+edata = edata[rowMeans(edata) > 5, ]
+edata = log2(edata+1)
+
+
+```
+
+
+Answer: 223 at FDR 5%; ENSMUSG00000000402 first DE gene
+
+
+# Question 3: Use the \verb|nullp|nullp and \verb|goseq|goseq functions in the \verb|goseq|goseq package to perform a gene ontology analysis. What is the top category that comes up as over represented? (hint: you will need to use the genome information on the genome from question 1 and the differential expression analysis from question 2.
+
+
+```{r}
+
+library(Biobase)
+library(limma)
+con =url("http://bowtie-bio.sourceforge.net/recount/ExpressionSets/bottomly_eset.RData")
+load(file=con)
+close(con)
+bot = bottomly.eset
+pdata_bot=pData(bot)
+fdata_bot = featureData(bot)
+edata = exprs(bot)
+fdata_bot = fdata_bot[rowMeans(edata) > 5]
+edata = edata[rowMeans(edata) > 5, ]
+edata = log2(edata+1)
+
+
+```
+
+
+Answer: GO:0004888 
+
+
+# Question 4: Look up the GO category that was the top category from the previous question. What is the name of the category? 
+
+Answer: 
+not this: signaling receptor activity
+
+not this: peptide receptor activity
+
+transmembrane signaling receptor activity
+
+
+
+
+# Question 5: Load the Bottomly data with the following code and perform a differential expression analysis using \verb|limma|limma and treating strain as the outcome but adjusting for lane as a factor. Then find genes significant at the 5% FDR rate using the Benjamini Hochberg correction and perform the gene set analysis with \verb|goseq|goseq following the protocol from the first 4 questions. How many of the top 10 overrepresented categories are the same for the adjusted and unadjusted analysis?
+
+```{r}
+
+library(limma)
+con =url("http://bowtie-bio.sourceforge.net/recount/ExpressionSets/bottomly_eset.RData")
+load(file=con)
+close(con)
+bot = bottomly.eset
+pdata_bot=pData(bot)
+fdata_bot = featureData(bot)
+edata = exprs(bot)
+fdata_bot = fdata_bot[rowMeans(edata) > 5]
+edata = edata[rowMeans(edata) > 5, ]
+
+
+```
+
+
+Answer: 2
+
+
+
+
+### Command line tools
+
+1.
+Question 1
+Which of the following statements is FALSE:
+
+1 point
+
+SNP refers to a Single Non-defined Polymorhism
+
+
+SNVs encompass single nucleotide insertions, deletions and substitutions.
+
+
+A polymorphism is a genetic variant that occurs in more than 1% of the population.
+
+
+In a normal cell, each locus in the genome can have at most two alleles.
+
+
+Question 2
+Which of the following statements is FALSE:
+
+
+The VCF format shows the changes in amino acid resulting from the nucleotide mutation, in column 3.
+
+
+The software SAMtools can be used to analyze alignments of exome sequencing reads and to determine sites of variation.
+
+
+The mpileup format produced by SAMtools can be used to represent sites of variation.
+
+
+The VCF FORMAT lines specify the format used for the genotype data.Option text
+
+Question 3
+What program can be used to generate a list of candidate sites of variation in an exome data set:
+
+
+samtools mpileup
+
+
+bwamem
+
+
+samtools tview
+
+
+head
+
+
+Question 4
+In a comprehensive effort to study genome variation in a patient cohort, you sequence and call variants in the exome, whole genome shotgun and RNA-seq data from each patient. Which of the following is FALSE when comparing these three types of resources:
+
+
+
+Whole genome sequencing can comprehensively identify variants in all protein-coding genes.
+
+
+RNA-seq can systematically identify variants in gene regulatory regions.
+
+
+RNA-seq allows detection of intronic variants.
+
+
+RNA-seq will only capture variants in the expressed genes.
+
+
+Question 5
+Which of the following options can be used to allow bowtie2 to generate partial alignments?
+
+
+
+-D
+
+
+--sensitive
+
+
+--local
+
+
+–ignore-quals
+
+6.
+Question 6
+Select the correct interpretation for the snippet of ‘mpileup’ output below.
+
+1234
+```
+Chr3	11700316	C	8	.$.......	8C@C;CB3
+Chr3	11951491	G	16	AAAA,......aA..A	C2@2BCBCCCAC2CC4 
+``` 
+1 point
+
+Only site 2 shows potential variation; 
+
+     the alternate letter for site 2 is A;
+
+     the alternate allele for site 2 is supported by 9 reads
+
+
+Only site 2 shows potential variation;
+
+     the alternate letter for site 2 is A;
+
+     site 1 has 8 supporting reads, and site 2 has 16
+
+
+Only site 2 shows potential variation;
+
+     the alternate letter for site 2 is ‘.’;
+
+     site 1 has 8 supporting reads, and site 2 has 16
+
+
+Only site 2 shows potential variation;
+
+     the alternate letter for site 2 is G;
+
+     site 1 has 8 supporting reads, and site 2 has 16
+
+7.
+Question 7
+Given the set of variants described in the VCF excerpt below, which of the following is FALSE?
+
+123456789
+```
+##INFO=<ID=DP,Number=1,Type=Integer,Description="Raw read depth">
+##INFO=<ID=MQ,Number=1,Type=Integer,Description="Average mapping quality">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=PL,Number=G,Type=Integer,Description="List of Phred-scaled genotype likelihoods">
+Chr3	11966312	 .	G	A	15.9	. DP=5;MQ=15    GT:PL   1/1:43,9,0
+Chr3	11972108	.	TAAAA	TAAA	32.8	.	 INDEL;IDV=7;IMF=0.636364;DP=11;MQ=22	GT:PL	0/1:66,0,2
+Chr3	13792328	rs145271872	G	T	5.5	.	DP=1;MQ=40	GT
+1 point
+
+Variant 3 has read depth 40
+
+
+Variant 3 is registered in HapMap
+
+
+There are 3 reported variants
+
+
+Variant 1 and variant 3 are SNPs, variant 2 is an indel
+
+8.
+Question 8
+What does the following code do:
+
+123
+```
+bowtie2 –x species/species –U in.fastq | grep –v “^@” | cut –f3 | sort | uniq –c
+```
+1 point
+
+Run bowtie2 with a set of single-end reads, reporting up to 5 alignments per read; then determine the number of matches on each genomic sequence
+
+
+Run bowtie2 with a set of single-end reads, reporting the best alignment only;
+
+    then determine the number of matches on each genomic sequence
+
+
+Run bowtie2 with a set of paired-end reads, allowing up to 10 matches per read;
+
+   then report the number of matches on each genomic sequence
+
+
+Run bowtie2 with a set of paired-end reads, allowing for local matches;
+
+   then report the numbers of alignments containing insertions and deletions, respectively;
+
+
+# Question 9
+What does the following snippet of code do NOT do:
+
+
+```{bash}
+samtools mpileup –O –f genome.fa  in.bam | cut –f7
+```
+
+
+Report an empty column
+
+
+Report in the intermediate mpileup output the qualities of all read bases aligned at that position
+
+
+Require a sorted BAM file
+
+
+Produce a 7-column intermediate mpileup file that is piped to ‘cut’
+
+
+# Question 10
+What does the following code do NOT do: 
+
+
+```{bash}
+bcftools call –v –c –O z –o out.vcf.gz in.vcf.gz
+
+```
+
+Skip indels
+
+
+Use the ‘consensus caller’ model to call variants
+
+
+Report output in compressed VCF format
+
+
+Report variant sites only
+
+
+
+
+
+
+
